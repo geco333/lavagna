@@ -1,19 +1,23 @@
 FROM node:latest
 
 WORKDIR /lavagna
-
 COPY . .
-
 RUN npm install
-
 
 
 FROM maven:3.6.3-jdk-8
 
 WORKDIR /lavagna
-
 COPY --from=0 /lavagna .
+RUN mvn install -DskipTests
 
-RUN mvn verify
+RUN rm -fr src
 
-ENTRYPOINT ./lavagna.sh
+RUN apt update
+RUN apt install -y netcat
+
+ENTRYPOINT /lavagna/lavagna.sh
+
+
+
+
